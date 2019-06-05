@@ -3,6 +3,8 @@ import argparse
 import requests
 import json
 
+from publishers import buffer_publisher
+
 logging.basicConfig(level=logging.WARNING,
                     format='%(asctime)s [%(levelname)s] (%(processName)-10s) %(message)s',
                     )
@@ -71,4 +73,13 @@ def main():
   latest_trackdata = pull_latest_trackdata(CONFIG.get('whitelabel'))
 
   # send track data to endpoints
+  if CONFIG.get('buffer'):
+      publisher = BufferPublisher(latest_trackdata, CONFIG.get('buffer'), CONFIG.get('buffer_twitter')
+      publisher.format()
+      publisher.publish()
+
+      publisher.format_twitter()
+      publisher.publish()
+      
+    
 
