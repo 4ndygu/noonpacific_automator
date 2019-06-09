@@ -15,6 +15,9 @@ RUN mkdir -p /var/log/gcpauditlogs_splunkmonitor
 ADD whitelabel_automator_cron /etc/cron.d/whitelabel_automator_cron
 RUN chmod 644 /etc/cron.d/whitelabel_automator_cron
 
+ADD config.yaml /etc/secrets/config.yaml
+RUN chmod 644 /etc/secrets/config.yaml
+
 WORKDIR /opt/whitelabel_automator
 COPY requirements.txt /opt/whitelabel_automator
 

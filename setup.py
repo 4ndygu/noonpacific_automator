@@ -6,7 +6,7 @@ setup(name='whitelabel_automator',
       classifiers=[
         'Programming Language :: Python :: 2.7'
       ],
-      author='Andy Gu'
+      author='Andy Gu',
       license='MIT',
       packages=find_packages(),
       include_package_data=True,

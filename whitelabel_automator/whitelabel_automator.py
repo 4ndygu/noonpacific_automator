@@ -26,8 +26,8 @@ def pull_track_summaries(mixtape, client_token):
              'Client': client_token}
   params = {'mixtape': mixtape}
 
-  response = requests.get(WHITELABEL_TRACK_ENDPOINT, headers=headers
-                                                   , params=params)
+  response = requests.get(WHITELABEL_TRACK_ENDPOINT, headers=headers, 
+    params=params)
 
   if response.status_code == 200:
     # Check if today's mixtape is right
@@ -47,9 +47,6 @@ def pull_latest_trackdata(client_token):
 
   response = requests.get(WHITELABEL_MIXTAPE_ENDPOINT, headers=headers)
 
-  print response
-  print response.status_code
-
   if response.status_code == 200:
     # Check if today's mixtape is right
     response_data = response.json()
@@ -62,13 +59,12 @@ def pull_latest_trackdata(client_token):
 
     return result
   else:
-    print "no 200"
     logger.error("Unable to pull track metadata")
     sys.exit()
 
 def load_config():
   try:
-    with open('config.yaml') as config_file:
+    with open('/etc/secrets/config.yaml') as config_file:
       return yaml.safe_load(config_file)
   except Exception as e:
     logger.exception("Fatal error in config load")
@@ -92,5 +88,5 @@ def main():
     publisher.format_twitter()
     publisher.publish()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

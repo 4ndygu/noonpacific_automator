@@ -66,7 +66,7 @@ class BufferPublisher(Publisher):
       response = requests.post(self.endpoint, headers=headers,
         data=self.payload, params=params)
 
-      logger.info('Response: {}'.format(response.json())
+      logger.info('Response: {}'.format(response.json()))
       
       # error handling for the request
       if response.status_code == 200:
