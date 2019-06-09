@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
 import argparse
-import requests
 import json
+import logging
+import requests
+import sys
+import yaml
 
-from publishers import buffer_publisher
+from publishers.buffer_publisher import BufferPublisher 
 
-logging.basicConfig(level=logging.WARNING,
-                    format='%(asctime)s [%(levelname)s] (%(processName)-10s) %(message)s',
-                    )
+# set up logging to file
+logging.basicConfig(
+     filename='/var/log/whitelabel_automator.log',
+     level=logging.INFO,
+     format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+     datefmt='%H:%M:%S'
+)
 
-requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.WARNING)
-requests_log.propagate = True
+logger = logging.getLogger(__name__)
 
 WHITELABEL_MIXTAPE_ENDPOINT = 'https://beta.whitelabel.cool/api/mixtapes/latest'
-WHITELABEL_TRACK_ENDPOINT = 'https://beta.whitelabel.cool/api/mixtapes/latest'
+WHITELABEL_TRACK_ENDPOINT = 'https://beta.whitelabel.cool/api/tracks'
 
-def pull_track_summaries(mixtape):
+def pull_track_summaries(mixtape, client_token):
   headers = {'Accept': 'application/json',
              'Client': client_token}
   params = {'mixtape': mixtape}
@@ -24,16 +29,17 @@ def pull_track_summaries(mixtape):
   response = requests.get(WHITELABEL_TRACK_ENDPOINT, headers=headers
                                                    , params=params)
 
-  if response.status_code == '200':
+  if response.status_code == 200:
     # Check if today's mixtape is right
     response_data = response.json()
 
     if response_data:
       response_tracks = [item for item in response_data["results"] if item["mixtape"] == mixtape]
+
       return response_data
     else:
-      # TODO: fail safely
-      pass
+      logger.error("Unable to pull track summaries")
+      sys.exit()
 
 def pull_latest_trackdata(client_token):
   headers = {'Accept': 'application/json',
@@ -41,11 +47,14 @@ def pull_latest_trackdata(client_token):
 
   response = requests.get(WHITELABEL_MIXTAPE_ENDPOINT, headers=headers)
 
-  if response.status_code == '200':
+  print response
+  print response.status_code
+
+  if response.status_code == 200:
     # Check if today's mixtape is right
     response_data = response.json()
     
-    track_metadata = pull_track_summaries(response_data['id'])
+    track_metadata = pull_track_summaries(response_data['id'], client_token)
 
     result = {}
     result["mixtape"] = response_data
@@ -53,16 +62,17 @@ def pull_latest_trackdata(client_token):
 
     return result
   else:
-    # TODO: Raise an error
-    pass
+    print "no 200"
+    logger.error("Unable to pull track metadata")
+    sys.exit()
 
 def load_config():
   try:
     with open('config.yaml') as config_file:
       return yaml.safe_load(config_file)
   except Exception as e:
-      LOG.error(f'Config ERROR: {e}')
-      exit()
+    logger.exception("Fatal error in config load")
+    exit()
 
 def main():
   parser = argparse.ArgumentParser()
@@ -74,12 +84,13 @@ def main():
 
   # send track data to endpoints
   if CONFIG.get('buffer'):
-      publisher = BufferPublisher(latest_trackdata, CONFIG.get('buffer'), CONFIG.get('buffer_twitter')
-      publisher.format()
-      publisher.publish()
+    publisher = BufferPublisher(latest_trackdata, CONFIG.get('buffer'), CONFIG.get('buffer_twitter'))
 
-      publisher.format_twitter()
-      publisher.publish()
-      
-    
+    publisher.format()
+    publisher.publish()
 
+    publisher.format_twitter()
+    publisher.publish()
+
+if __name__ == "__main__":
+    main()

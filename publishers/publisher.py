@@ -1,13 +1,15 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
+import logging
 import requests
+import sys
 
-class Publisher(ABC):
+class Publisher:
+    __metaclass__ = ABCMeta
  
     def __init__(self, metadata):
         self.track_metadata = metadata["tracks"]
         self.mixtape_metadata = metadata["mixtape"]
-        super().__init__()
     
     @abstractmethod
     def format(self):
