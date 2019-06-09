@@ -30,9 +30,13 @@ class BufferPublisher(Publisher):
       resp = requests.get(self.profiles_endpoint, params=params).json()
 
       self.profiles = [item['id'] for item in resp 
-        if item['formatted_service'] != 'Twitter']
+        if item['formatted_service'] != 'Twitter' and item['disabled'] == False
+        and item['disconnected'] == False and item['locked'] == False
+        and item['paused'] == False]
       self.twitter_profile = [item['id'] for item in resp 
-        if item['formatted_service'] == 'Twitter']
+        if item['formatted_service'] == 'Twitter' and item['disabled'] == False
+        and item['disconnected'] == False and item['locked'] == False
+        and item['paused'] == False]
 
     def format(self):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
@@ -42,14 +46,12 @@ class BufferPublisher(Publisher):
         self.mixtape_metadata['artwork_credit'], 
         tracklist)
 
-      self.payload['media'] = {'link': self.mixtape_metadata['artwork_url'], 
-                               'description': 'Art by {}'.format(self.mixtape_metadata['artwork_credit'])}
+      self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
       self.payload['profile_ids'] = self.profiles
 
     def format_twitter(self):
       self.payload['text'] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
-      self.payload['media'] = {'link': self.mixtape_metadata['artwork_url'], 
-                               'description': 'Art by {}'.format(self.mixtape_metadata['artwork_credit'])}
+      self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
       self.payload['profile_ids'] = self.twitter_profile
 
     def publish(self):
