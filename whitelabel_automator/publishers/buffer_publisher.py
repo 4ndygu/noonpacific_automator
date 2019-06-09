@@ -38,21 +38,19 @@ class BufferPublisher(Publisher):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
       tracklist = ' '.join(['{} {} - {}'.format(index, item[0].encode('utf-8'), item[1].encode('utf-8')) for index, item in enumerate(sanitized_metadata)])
 
-      self.payload["text"] = 'NOON // {} Photo // {} {}'.format(self.mixtape_metadata['id'], 
+      self.payload['text'] = 'NOON // {} Photo // {} {}'.format(self.mixtape_metadata['id'], 
         self.mixtape_metadata['artwork_credit'], 
         tracklist)
 
-      self.payload["media"] = {"link": self.mixtape_metadata['artwork_url'], 
-                               "description": "Art by {}".format(self.mixtape_metadata['artwork_credit'])}
-
-      self.profile_params = {'profile_ids': self.profiles}
+      self.payload['media'] = {'link': self.mixtape_metadata['artwork_url'], 
+                               'description': 'Art by {}'.format(self.mixtape_metadata['artwork_credit'])}
+      self.payload['profile_ids'] = self.profiles
 
     def format_twitter(self):
-      self.payload["text"] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
-      self.payload["media"] = {"link": self.mixtape_metadata['artwork_url'], 
-                               "description": "Art by {}".format(self.mixtape_metadata['artwork_credit'])}
-
-      self.profile_params = {'profile_ids': self.twitter_profile}
+      self.payload['text'] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
+      self.payload['media'] = {'link': self.mixtape_metadata['artwork_url'], 
+                               'description': 'Art by {}'.format(self.mixtape_metadata['artwork_credit'])}
+      self.payload['profile_ids'] = self.twitter_profile
 
     def publish(self):
       # Check if the message has been formatted
@@ -60,17 +58,17 @@ class BufferPublisher(Publisher):
           logger.error("Publish called before format! No payload to send.")
           sys.exit()
 
-      params = self.profile_params
-      params['access_token'] = self.token
-
+      params = {'access_token': self.token}
       headers = {'Accept': 'application/json'}
 
-      print self.payload
+      logger.info('Sending the following payload: {}'.format(self.payload))
+
       response = requests.post(self.endpoint, headers=headers,
-        data=self.payload, params=self.profile_params)
+        data=self.payload, params=params)
+
+      logger.info('Response: {}'.format(response.json())
       
       # error handling for the request
-      print(response.json())
       if response.status_code == 200:
         if response.json()['success'] != 'true':
           logger.error('Failed to deploy publication')

@@ -1,0 +1,6 @@
+[18:22:55] {whitelabel_automator.py:70} ERROR - Fatal error in config load
+Traceback (most recent call last):
+  File "whitelabel_automator.py", line 68, in load_config
+    return yaml.safe_load(config_file)
+NameError: global name 'yaml' is not defined
+[18:23:24] {whitelabel_automator.py:63} ERROR - Unable to pull track metadata
