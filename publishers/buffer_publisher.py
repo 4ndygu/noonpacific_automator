@@ -51,7 +51,6 @@ class BufferPublisher(Publisher):
       self.payload["text"] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
       self.payload["media"] = {"link": self.mixtape_metadata['artwork_url'], 
                                "description": "Art by {}".format(self.mixtape_metadata['artwork_credit'])}
-      self.payload["text"] = "SOME SHIT"
 
       self.profile_params = {'profile_ids': self.twitter_profile}
 
@@ -64,12 +63,16 @@ class BufferPublisher(Publisher):
       params = self.profile_params
       params['access_token'] = self.token
 
-      response = requests.post(self.endpoint, data=self.payload, params=self.profile_params)
+      headers = {'Accept': 'application/json'}
+
+      print self.payload
+      response = requests.post(self.endpoint, headers=headers,
+        data=self.payload, params=self.profile_params)
       
       # error handling for the request
-      print(response)
+      print(response.json())
       if response.status_code == 200:
-        if response.json()["success"] != "true":
-          logger.error("Failed to deploy publication")
+        if response.json()['success'] != 'true':
+          logger.error('Failed to deploy publication')
       else:
-        logger.error("Failed to deploy publication")
+        logger.error('Failed to deploy publication')
