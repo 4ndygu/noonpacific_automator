@@ -88,5 +88,11 @@ def main():
     publisher.format_twitter()
     publisher.publish()
 
+  if CONFIG.get('mailchimp'):
+    publisher = MailchimpPublisher(latest_trackdata, CONFIG.get('mailchimp'))
+
+    publisher.format()
+    publisher.publish()
+
 if __name__ == '__main__':
     main()

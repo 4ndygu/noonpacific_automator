@@ -14,29 +14,22 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-class BufferPublisher(Publisher):
+class MaklchimpPublisher(Publisher):
 
-    def __init__(self, metadata, token, twitter=False):
-      super(BufferPublisher, self).__init__(metadata)
+    def __init__(self, metadata, token, template_id, audience_id):
+      super(MailchimpPublisher, self).__init__(metadata)
 
-      self.endpoint = 'https://api.bufferapp.com/1/updates/create.json'
-      self.profiles_endpoint = 'https://api.bufferapp.com/1/profiles.json'
+      zone = token.split('-')[-1]
+
+      self.endpoint = 'https://{}.api.mailchimp.com/3.0/'.format(zone)
       self.token = token
       self.payload = {}
+      self.template_id = template_id
+      self.audience_id = audience_id
 
-      # Get profiles for Buffer
-      params = {'access_token': self.token}
-
-      resp = requests.get(self.profiles_endpoint, params=params).json()
-
-      self.profiles = [item['id'] for item in resp 
-        if item['formatted_service'] != 'Twitter' and item['disabled'] == False
-        and item['disconnected'] == False and item['locked'] == False
-        and item['paused'] == False]
-      self.twitter_profile = [item['id'] for item in resp 
-        if item['formatted_service'] == 'Twitter' and item['disabled'] == False
-        and item['disconnected'] == False and item['locked'] == False
-        and item['paused'] == False]
+      # Load basic auth header
+      var auth_header = base64.b64encode('meaningless:{}'.format(token)) 
+      self.headers = {'Authorization': 'Basic {}'.format(auth_header)}
 
     def format(self):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
@@ -49,21 +42,14 @@ class BufferPublisher(Publisher):
       self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
       self.payload['profile_ids'] = self.profiles
 
-    def format_twitter(self):
-      self.payload['text'] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
-      self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
-      self.payload['profile_ids'] = self.twitter_profile
-
     def publish(self):
       # Check if the message has been formatted
       if not self.payload:
-          logger.error('Publish called before format! No payload to send.')
+          logger.error("Publish called before format! No payload to send.")
           sys.exit()
 
-      params = {'access_token': self.token}
-      headers = {'Accept': 'application/json'}
-
-      print self.payload
+      # Generate campaign
+      # Generate campaign content
 
       logger.info('Sending the following payload: {}'.format(self.payload))
 
