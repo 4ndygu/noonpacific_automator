@@ -7,6 +7,7 @@ import sys
 import yaml
 
 from publishers.buffer_publisher import BufferPublisher 
+from publishers.mailchimp_publisher import MailchimpPublisher 
 
 # set up logging to file
 logging.basicConfig(
@@ -78,6 +79,9 @@ def main():
 
   latest_trackdata = pull_latest_trackdata(CONFIG.get('whitelabel'))
 
+  print CONFIG.get('buffer')
+  print CONFIG.get('mailchimp')
+
   # send track data to endpoints
   if CONFIG.get('buffer'):
     publisher = BufferPublisher(latest_trackdata, CONFIG.get('buffer'), CONFIG.get('buffer_twitter'))
@@ -89,7 +93,8 @@ def main():
     publisher.publish()
 
   if CONFIG.get('mailchimp'):
-    publisher = MailchimpPublisher(latest_trackdata, CONFIG.get('mailchimp'))
+    publisher = MailchimpPublisher(latest_trackdata, 
+            CONFIG.get('mailchimp'), CONFIG.get('mailchimp_audience'))
 
     publisher.format()
     publisher.publish()

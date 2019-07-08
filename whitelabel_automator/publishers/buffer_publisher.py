@@ -63,8 +63,6 @@ class BufferPublisher(Publisher):
       params = {'access_token': self.token}
       headers = {'Accept': 'application/json'}
 
-      print self.payload
-
       logger.info('Sending the following payload: {}'.format(self.payload))
 
       response = requests.post(self.endpoint, headers=headers,

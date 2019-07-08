@@ -7,11 +7,7 @@ RUN apt-get update && apt-get install -q -y --force-yes \
     python-dev \
     python-virtualenv 
 
-# create directories
-RUN mkdir -p /opt/gcpauditlogs_splunkmonitor
-RUN mkdir -p /etc/spotify/secrets
-RUN mkdir -p /var/log/gcpauditlogs_splunkmonitor
-
+# create crons
 ADD whitelabel_automator_cron /etc/cron.d/whitelabel_automator_cron
 RUN chmod 644 /etc/cron.d/whitelabel_automator_cron
 
