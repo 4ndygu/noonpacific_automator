@@ -26,7 +26,7 @@ class MailchimpPublisher(Publisher):
 
       zone = token.split('-')[-1]
 
-      self.template_location = 'templates/mailchimp.html'
+      self.template_location = '/etc/secrets/mailchimp.html'
       self.endpoint_template = 'https://{}.api.mailchimp.com/3.0/templates'.format(zone)
       self.endpoint_campaign = 'https://{}.api.mailchimp.com/3.0/campaigns'.format(zone)
       self.token = token
