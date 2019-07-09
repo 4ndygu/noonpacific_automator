@@ -1,0 +1,1 @@
+recursive-include whitelabel_automator/templates *.html
