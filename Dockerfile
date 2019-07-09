@@ -15,7 +15,7 @@ ADD config.yaml /etc/secrets/config.yaml
 RUN chmod 644 /etc/secrets/config.yaml
 
 ADD mailchimp.html /etc/secrets/mailchimp.html
-RUN chmod 644 /etc/secrets/mailchimp.yaml
+RUN chmod 644 /etc/secrets/mailchimp.html
 
 WORKDIR /opt/whitelabel_automator
 COPY requirements.txt /opt/whitelabel_automator

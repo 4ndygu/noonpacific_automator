@@ -1,5 +1,6 @@
 argparse
 bs4
 logging
+lxml
 requests
 pyyaml
