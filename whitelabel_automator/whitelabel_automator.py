@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from datetime import date, datetime
+
 import argparse
 import json
 import logging
@@ -76,6 +78,15 @@ def main():
   args = parser.parse_args()
 
   CONFIG = load_config()
+
+  # Check what day it is
+  day = date.today().weekday()
+  if day > 2:
+      logger.error("Not running report on day: {}".format(day))
+      sys.exit()
+  else:
+      logger.info("Running report on day: {}".format(day))
+
 
   latest_trackdata = pull_latest_trackdata(CONFIG.get('whitelabel'))
 

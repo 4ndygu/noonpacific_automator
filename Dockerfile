@@ -32,4 +32,4 @@ COPY dist/whitelabel_automator-*.tar.gz /tmp/
 RUN /opt/whitelabel_automator/venv/bin/pip install /tmp/whitelabel_automator-*.tar.gz
 
 # start cron and wait; cron will start script
-CMD cron && trap : TERM INT; sleep infinity & wait
+CMD wait
