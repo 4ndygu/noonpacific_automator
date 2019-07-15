@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -q -y --force-yes \
     python-virtualenv 
 
 # create crons
-ADD whitelabel_automator_cron /etc/cron.d/whitelabel_automator_cron
-RUN chmod 644 /etc/cron.d/whitelabel_automator_cron
+# ADD whitelabel_automator_cron /etc/cron.d/whitelabel_automator_cron
+# RUN chmod 644 /etc/cron.d/whitelabel_automator_cron
 
 ADD config.yaml /etc/secrets/config.yaml
 RUN chmod 644 /etc/secrets/config.yaml
