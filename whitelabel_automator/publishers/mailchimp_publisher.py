@@ -11,7 +11,7 @@ import sys
 
 # set up logging to file
 logging.basicConfig(
-  filename='/var/log/whitelabel_automator.log',
+  stream=sys.stdout,
   level=logging.INFO,
   format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
   datefmt='%H:%M:%S'
