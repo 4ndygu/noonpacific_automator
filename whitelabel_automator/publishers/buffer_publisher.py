@@ -42,7 +42,7 @@ class BufferPublisher(Publisher):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
       tracklist = '\n '.join(['{} {} - {}'.format(index, item[0].encode('utf-8'), item[1].encode('utf-8')) for index, item in enumerate(sanitized_metadata)])
 
-      self.payload['text'] = 'NOON // {} \n Photo // {} \n {}'.format(self.mixtape_metadata['id'], 
+      self.payload['text'] = '{} \n 📷 {} \n {}'.format(self.mixtape_metadata['title'], 
         self.mixtape_metadata['artwork_credit'], 
         tracklist)
 
@@ -50,7 +50,7 @@ class BufferPublisher(Publisher):
       self.payload['profile_ids'] = self.profiles
 
     def format_twitter(self):
-      self.payload['text'] = 'NOON // {} Now Streaming'.format(self.mixtape_metadata['id'])
+      self.payload['text'] = '{} Now Streaming'.format(self.mixtape_metadata['title'])
       self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
       self.payload['profile_ids'] = self.twitter_profile
 
