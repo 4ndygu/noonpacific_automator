@@ -40,9 +40,9 @@ class BufferPublisher(Publisher):
 
     def format(self):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
-      tracklist = '\n '.join(['{} {} - {}'.format(index, item[0].encode('utf-8'), item[1].encode('utf-8')) for index, item in enumerate(sanitized_metadata)])
+      tracklist = '\n '.join(['{} {} - {}'.format(index+1, item[0].encode('utf-8'), item[1].encode('utf-8')) for index, item in enumerate(sanitized_metadata)])
 
-      self.payload['text'] = '{} \n 📷 {} \n {}'.format(self.mixtape_metadata['title'], 
+      self.payload['text'] = '\n{} \n 📷 {} \n {}'.format(self.mixtape_metadata['title'], 
         self.mixtape_metadata['artwork_credit'], 
         tracklist)
 
