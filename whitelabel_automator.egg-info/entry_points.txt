@@ -1,0 +1,3 @@
+[console_scripts]
+whitelabel_automator = whitelabel_automator.whitelabel_automator:main
+

@@ -1,0 +1,13 @@
+setup.py
+whitelabel_automator/__init__.py
+whitelabel_automator/whitelabel_automator.py
+whitelabel_automator.egg-info/PKG-INFO
+whitelabel_automator.egg-info/SOURCES.txt
+whitelabel_automator.egg-info/dependency_links.txt
+whitelabel_automator.egg-info/entry_points.txt
+whitelabel_automator.egg-info/not-zip-safe
+whitelabel_automator.egg-info/top_level.txt
+whitelabel_automator/publishers/__init__.py
+whitelabel_automator/publishers/buffer_publisher.py
+whitelabel_automator/publishers/mailchimp_publisher.py
+whitelabel_automator/publishers/publisher.py

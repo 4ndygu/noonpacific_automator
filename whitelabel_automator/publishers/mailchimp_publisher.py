@@ -56,7 +56,7 @@ class MailchimpPublisher(Publisher):
     def format(self):
       sanitized_metadata = [[item['title'], item['artist']] for item in self.track_metadata['results']]
 
-      self.title = 'NOON // {}'.format(self.mixtape_metadata['id'])
+      self.title = '{}'.format(self.mixtape_metadata['title'])
 
       # Change title
       title_block = self.soup.find(id="automator_title")
