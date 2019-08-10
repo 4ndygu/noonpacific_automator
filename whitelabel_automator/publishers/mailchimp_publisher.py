@@ -29,6 +29,7 @@ class MailchimpPublisher(Publisher):
       self.template_location = '/etc/secrets/mailchimp.html'
       self.endpoint_template = 'https://{}.api.mailchimp.com/3.0/templates'.format(zone)
       self.endpoint_campaign = 'https://{}.api.mailchimp.com/3.0/campaigns'.format(zone)
+      self.endpoint_schedule_campaign = 'https://{}.api.mailchimp.com/3.0/campaigns/{}/actions/schedule'.format(zone, '{}')
       self.token = token
       self.payload = {}
       self.audience_id = audience_id
@@ -125,3 +126,17 @@ class MailchimpPublisher(Publisher):
       if response.status_code != 200:
         logger.error('Mailchimp: Response errored out, see above')
         sys.exit()
+
+      logger.info('Scheduling Mailchimp Campaign...')
+      if 'id' in response.json():
+        schedule_endpoint = self.endpoint_schedule_campaign.format(response.json()['id'])
+       
+        self.payload = {}
+        self.payload['schedule_time'] = date.today().isoformat() + 'T19:00:00'
+
+        logger.info('Schedule endpoint: {}'.format(schedule_endpoint))
+        response = requests.post(schedule_endpoint, headers=self.headers,
+          json=self.payload)
+        logger.info('Mailchimp: Response: {}'.format(response.json()))
+      else:
+        logger.error('No id found in MailChimp response!')
