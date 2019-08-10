@@ -28,6 +28,11 @@ class BufferPublisher(Publisher):
       params = {'access_token': self.token}
 
       resp = requests.get(self.profiles_endpoint, params=params).json()
+      logger.info('Response from profiles_endpoint: {}'.format(resp))
+
+      if resp['code'] == 401:
+          logger.error('Access token invalid for buffer')
+          sys.exit()
 
       self.profiles = [item['id'] for item in resp 
         if item['formatted_service'] != 'Twitter' and item['disabled'] == False
