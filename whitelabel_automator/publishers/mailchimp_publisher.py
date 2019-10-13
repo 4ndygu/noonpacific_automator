@@ -34,6 +34,8 @@ class MailchimpPublisher(Publisher):
       self.payload = {}
       self.audience_id = audience_id
       self.template_id = ""
+      self.from_name = "Clark Dinnison"
+      self.from_address = "clark@noonpacific.com"
 
       self.title = ""
       self.soup = None
@@ -115,6 +117,8 @@ class MailchimpPublisher(Publisher):
       self.payload['settings']['subject_line'] = self.title
       self.payload['settings']['title'] = self.title
       self.payload['settings']['template_id'] = self.template_id
+      self.payload['settings']['from_name'] = self.from_name
+      self.payload['settings']['reply_to'] = self.from_address
 
       logger.info('Mailchimp: Creating Campaign')
 
@@ -132,11 +136,11 @@ class MailchimpPublisher(Publisher):
         schedule_endpoint = self.endpoint_schedule_campaign.format(response.json()['id'])
        
         self.payload = {}
-        self.payload['schedule_time'] = date.today().isoformat() + 'T19:00:00'
+        self.payload['schedule_time'] = date.today().isoformat() + 'T21:00:00'
 
         logger.info('Schedule endpoint: {}'.format(schedule_endpoint))
         response = requests.post(schedule_endpoint, headers=self.headers,
           json=self.payload)
-        logger.info('Mailchimp: Response: {}'.format(response.json()))
+        logger.info('Mailchimp: Response: {}'.format(response.status_code))
       else:
         logger.error('No id found in MailChimp response!')
