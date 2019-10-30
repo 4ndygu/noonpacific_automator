@@ -30,9 +30,10 @@ class BufferPublisher(Publisher):
       resp = requests.get(self.profiles_endpoint, params=params).json()
       logger.info('Response from profiles_endpoint: {}'.format(resp))
 
-      if resp['code'] == 401:
-          logger.error('Access token invalid for buffer')
-          sys.exit()
+      if 'code' in resp:
+          if resp['code'] == 401:
+              logger.error('Access token invalid for buffer')
+              sys.exit()
 
       self.profiles = [item['id'] for item in resp 
         if item['formatted_service'] != 'Twitter' and item['disabled'] == False
@@ -47,8 +48,8 @@ class BufferPublisher(Publisher):
       sanitized_metadata = [[item['artist'], item['title']] for item in self.track_metadata['results']]
       tracklist = '\n '.join(['{} {} - {}'.format(index+1, item[0].encode('utf-8'), item[1].encode('utf-8')) for index, item in enumerate(sanitized_metadata)])
 
-      self.payload['text'] = '\n{} \n 📷 {} \n {}'.format(self.mixtape_metadata['title'], 
-        self.mixtape_metadata['artwork_credit'], 
+      self.payload['text'] = '\n{} \n 📷 {} \n {}'.format(self.mixtape_metadata['title'].encode('utf-8'),
+        self.mixtape_metadata['artwork_credit'].encode('utf-8'),
         tracklist)
 
       self.payload['media[photo]'] = self.mixtape_metadata['artwork_url']
@@ -77,7 +78,7 @@ class BufferPublisher(Publisher):
       
       # error handling for the request
       if response.status_code == 200:
-        if response.json()['success'] != 'true':
+        if response.json()['success'] != True:
           logger.error('Failed to deploy publication')
       else:
         logger.error('Failed to deploy publication')
